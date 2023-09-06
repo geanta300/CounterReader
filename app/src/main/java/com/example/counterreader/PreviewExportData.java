@@ -334,7 +334,7 @@ public class PreviewExportData extends AppCompatActivity {
                 }
                 showToast("Datele au fost exportate cu succes.");
 
-                shareFiles();
+                shareAllFiles();
             }
             cursor.close();
             databaseHelper.close();
@@ -348,8 +348,8 @@ public class PreviewExportData extends AppCompatActivity {
         }
     }
 
-    private void shareFiles() {
-        FileShareHelper fileShareHelper = new FileShareHelper(this, directoryPathOfFiles, excelFileName, pdfFileName);
+    private void shareAllFiles() {
+        FileShareHelper fileShareHelper = new FileShareHelper(PreviewExportData.this, directoryPathOfFiles, excelFileName, pdfFileName);
         fileShareHelper.shareFiles();
         finish();
     }

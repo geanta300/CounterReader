@@ -42,7 +42,6 @@ public class FileShareHelper {
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_SUBJECT, "Raport contoare");
-        intent.putExtra(Intent.EXTRA_TEXT, "Atasat regasiti fisierele cu datele despre contoare.");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"cosmin.geanta@anatower.ro"});
         intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
 

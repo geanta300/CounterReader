@@ -11,36 +11,39 @@
         android:id="@+id/titlePreview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Preview date contoare"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="Previzualizare date contoare"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"/>
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/titlePreview"
         android:layout_above="@+id/editButton"
-        android:scrollbars="vertical"/>
+        android:layout_below="@+id/titlePreview"
+        android:scrollbars="vertical" />
 
     <Button
         android:id="@id/editButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="75dp"
         android:layout_above="@+id/exportButton"
         android:layout_marginBottom="0dp"
-        android:text="Editeaza datele" />
+        android:text="Editeaza datele"
+        android:textSize="20sp" />
 
     <Button
         android:id="@id/exportButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="75dp"
         android:layout_alignParentBottom="true"
-        android:text="Exporteaza fisierele" />
+        android:layout_marginBottom="5dp"
+        android:text="Exporteaza fisierele"
+        android:textSize="20sp" />
 
 </RelativeLayout>
