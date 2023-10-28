@@ -122,6 +122,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, values);
     }
 
+    public void updateData(int id, String chirias, String locatie, String felContor, String serie, double indexVechi, double indexNou, String codQR) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        String whereClause = COLUMN_ID + " = ?";
+        String[] whereArgs = {String.valueOf(id)};
+
+        values.put(COLUMN_CHIRIAS, chirias);
+        values.put(COLUMN_LOCATIE, locatie);
+        values.put(COLUMN_FEL_CONTOR, felContor);
+        values.put(COLUMN_SERIE, serie);
+        values.put(COLUMN_INDEX_VECHI, indexVechi);
+        values.put(COLUMN_INDEX_NOU, indexNou);
+        values.put(COLUMN_COD_QR, codQR);
+
+        db.update(TABLE_NAME, values, whereClause, whereArgs);
+    }
+
     public Cursor getDataByQR(String qr) {
         SQLiteDatabase db = this.getReadableDatabase();
 
