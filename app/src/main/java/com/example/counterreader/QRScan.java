@@ -44,7 +44,7 @@ public class QRScan extends AppCompatActivity implements ZXingScannerView.Result
     DatabaseHelper databaseHelper;
     Cursor cursor;
 
-    String oldVersion = "1";
+    String oldVersion = "1.0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
