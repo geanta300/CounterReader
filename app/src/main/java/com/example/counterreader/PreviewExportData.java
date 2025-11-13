@@ -323,7 +323,7 @@ public class PreviewExportData extends AppCompatActivity {
                         ContentValues values = new ContentValues();
                         values.put(DatabaseHelper.COLUMN_INDEX_VECHI, newIndex);
                         values.put(DatabaseHelper.COLUMN_INDEX_NOU, 0);
-                        values.put(DatabaseHelper.COLUMN_IMAGE_URI, " ");
+                        values.putNull(DatabaseHelper.COLUMN_IMAGE_URI);
 
                         String qrCode = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_COD_QR));
                         String whereClause = DatabaseHelper.COLUMN_COD_QR + "=?";

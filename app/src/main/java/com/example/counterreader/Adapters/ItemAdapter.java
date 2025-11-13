@@ -14,6 +14,8 @@ import com.example.counterreader.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
+import android.text.TextUtils;
+import android.net.Uri;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     private final Cursor cursor;
@@ -58,9 +60,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         holder.serieTextView.setText(serieText);
         holder.indexVechiTextView.setText(indexVechiText);
         holder.indexNouTextView.setText(indexNouText);
-        if (!Objects.equals(photoUri, " ")) {
+        if (!TextUtils.isEmpty(photoUri) && photoUri.trim().length() > 0) {
             holder.photoImageView.setVisibility(View.VISIBLE);
-            Picasso.get().load(photoUri).into(holder.photoImageView);
+            Picasso.get().load(Uri.parse(photoUri)).into(holder.photoImageView);
         } else {
             holder.photoImageView.setVisibility(View.GONE);
         }

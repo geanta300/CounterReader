@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     private List<SquareItem> squareItems;
@@ -43,12 +45,19 @@ public class MainActivity extends AppCompatActivity {
         squareAdapter = new SquareAdapter(squareItems);
         recyclerView.setAdapter(squareAdapter);
 
-        loadFilesFromFolder();
-
         Button scanQRCodes = findViewById(R.id.scanQRCodes);
         scanQRCodes.setOnClickListener(v -> {
             startActivity(new Intent(this, QRScan.class));
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (squareItems != null) {
+            squareItems.clear();
+        }
+        loadFilesFromFolder();
     }
 
 
@@ -72,40 +81,70 @@ public class MainActivity extends AppCompatActivity {
     private void loadFilesFromFolder() {
         File folder = new File(directoryPathOfFiles);
 
-        if (folder.exists() && folder.isDirectory()) {
-            File[] files = folder.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.toLowerCase().endsWith(".pdf") || name.toLowerCase().endsWith(".xlsx");
-                }
-            });
-
-            if (files != null) {
-                for (int i = 0; i + 1 < files.length; i += 2) {
-                    File file1 = files[i];
-                    File file2 = files[i + 1];
-
-                    if (file1.isFile() && file2.isFile()) {
-                        String fileName1 = file1.getName();
-                        String fileName2 = file2.getName();
-                        String[] parts = fileName1.split("_");
-                        String title = " ";
-
-                        if (parts[parts.length - 1].contains("xlsx")) {
-                            if (parts.length >= 2) {
-                                title = parts[1] + " " + parts[2].replace(".xlsx", "");
-                            }
-                        } else {
-                            title = parts[1] + " " + parts[2].replace(".pdf", "");
-                        }
-
-                        SquareItem squareItem = new SquareItem(title, fileName1, fileName2);
-                        squareItems.add(squareItem);
-
-                    }
-                }
-                squareAdapter.notifyDataSetChanged();
-            }
+        if (!folder.exists() || !folder.isDirectory()) {
+            squareAdapter.notifyDataSetChanged();
+            return;
         }
+
+        File[] files = folder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                String lower = name.toLowerCase();
+                return lower.endsWith(".pdf") || lower.endsWith(".xlsx");
+            }
+        });
+
+        if (files == null || files.length == 0) {
+            squareAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        class Session {
+            String pdf;
+            String xlsx;
+            long lastModified;
+        }
+
+        Map<String, Session> sessions = new HashMap<>();
+
+        for (File f : files) {
+            if (!f.isFile()) continue;
+            String name = f.getName();
+            int dot = name.lastIndexOf('.');
+            String base = dot > 0 ? name.substring(0, dot) : name; // CounterData_Month_Year
+            Session s = sessions.get(base);
+            if (s == null) {
+                s = new Session();
+            }
+            if (name.toLowerCase().endsWith(".pdf")) {
+                s.pdf = name;
+            } else if (name.toLowerCase().endsWith(".xlsx")) {
+                s.xlsx = name;
+            }
+            s.lastModified = Math.max(s.lastModified, f.lastModified());
+            sessions.put(base, s);
+        }
+
+        List<Map.Entry<String, Session>> entries = new ArrayList<>(sessions.entrySet());
+        entries.sort((e1, e2) -> Long.compare(e2.getValue().lastModified, e1.getValue().lastModified));
+
+        for (Map.Entry<String, Session> entry : entries) {
+            String base = entry.getKey();
+            Session s = entry.getValue();
+            if (s.pdf == null || s.xlsx == null) {
+                // skip incomplete pairs
+                continue;
+            }
+            String[] parts = base.split("_");
+            String title = base;
+            if (parts.length >= 3) {
+                title = parts[1] + " " + parts[2];
+            }
+            // Keep consistent: excel first, pdf second
+            SquareItem squareItem = new SquareItem(title, s.xlsx, s.pdf);
+            squareItems.add(squareItem);
+        }
+
+        squareAdapter.notifyDataSetChanged();
     }
 }
